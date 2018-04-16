@@ -7,36 +7,32 @@ const server = http.createServer();
 var readStream = createReadStream('./index.html');
 
 server.on('request', (req, res) => {
+  res.writeHead(200, { 'useless-message': 'Hello' });
+  // res.write('<h1>Hello World</h1>');
+  // res.end();
+  readFile('./index.html', (err, buffer) => {
+    if (err) {
+      res.statusCode = 404;
+      res.end();
+    }
 
-    console.log('req.url', req.url)
-    console.log('req.method', req.method)
-    console.log('req.header', req.headers)
-    res.writeHead(200, {'useless-message':'Hello'})
-    // readFile('./index.html', (err, buffer) => {
-    //     if(err)
-    //         {
-    //             res.statusCode = 404;
-    //             res.end();
-    //         }
-        
-    //     res.write(buffer);
-    //     res.end();
-    // })
+    res.write(buffer);
+  });
 
-    readStream.on('error', err => {
-        console.log(err);
-        res.end(err);
-    });
-    
-    readStream.on('data', buffer => {
-        
-        readStream.pipe(buffer);
-        res.write(buffer.toString());
-    })
-    });
+  readStream.on('error', err => {
+    console.log(err);
+    res.end(err);
+  });
 
-    readStream.on('close', () => {
+  //   readStream.on('data', buffer => {
+  //     readStream.pipe(buffer);
+  //     res.write(buffer.toString());
+  //     res.end();
+  //   });
+});
 
-    })
-    // res.end();
-server.listen(8080);
+readStream.on('close', () => {});
+// res.end();
+server.listen(8080, () => {
+  console.log('listening on 8080');
+});
